@@ -1,0 +1,7 @@
+parameters:
+#    stmol_huddle.example.class: Stmol\HuddleBundle\Example
+
+services:
+#    stmol_huddle.example:
+#        class: %stmol_huddle.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
