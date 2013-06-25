@@ -1,0 +1,4 @@
+stmol_huddle:
+    resource: "@StmolHuddleBundle/Resources/config/routing.yml"
+    prefix:   /
+
