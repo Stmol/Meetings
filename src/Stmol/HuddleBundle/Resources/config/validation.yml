@@ -1,0 +1,7 @@
+Stmol\HuddleBundle\Entity\Meeting:
+    properties:
+        title:
+            - NotBlank: ~
+        startDate:
+            - NotBlank: ~
+            - Type: \DateTime

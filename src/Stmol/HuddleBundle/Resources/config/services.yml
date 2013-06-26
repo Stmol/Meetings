@@ -5,6 +5,10 @@ services:
     stmol_huddle.meetings_manager:
         class: Stmol\HuddleBundle\Services\MeetingManager
         arguments: ["@doctrine.orm.entity_manager"]
+    stmol_huddle.form.type.meeting:
+        class: Stmol\HuddleBundle\Form\MeetingType
+        tags:
+            - { name: form.type, alias: meeting }
 #    stmol_huddle.example:
 #        class: %stmol_huddle.example.class%
 #        arguments: [@service_id, "plain_value", %parameter%]
