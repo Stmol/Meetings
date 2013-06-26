@@ -2,6 +2,7 @@
 
 namespace Stmol\HuddleBundle\Tests\Services;
 
+use Stmol\HuddleBundle\Entity\Meeting;
 use Stmol\HuddleBundle\Services\MeetingManager;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -15,7 +16,7 @@ class MeetingManagerTest extends WebTestCase
         static::$kernel->boot();
 
         $this->_doctrine = static::$kernel->getContainer()
-                                         ->get('doctrine');
+            ->get('doctrine');
     }
 
     protected function tearDown()
@@ -24,27 +25,31 @@ class MeetingManagerTest extends WebTestCase
     }
 
     /**
-     * Test method create.
+     * Test method createMeeting.
      */
     public function testCreate()
     {
         $meetingManager = new MeetingManager($this->_doctrine->getManager());
 
-        $testData = array(
+        $fixtures = array(
             'title'       => 'testTitle',
             'description' => 'testDescription',
             'startDate'   => new \DateTime()
         );
 
         // Create new meeting
-        $meetingManager->create($testData);
+        $testMeeting = new Meeting();
+        $testMeeting->setTitle($fixtures['title']);
+        $testMeeting->setDescription($fixtures['description']);
+        $testMeeting->setStartDate($fixtures['startDate']);
+
+        $meetingManager->createMeeting($testMeeting);
 
         // Test new record
         $meeting = $this->_doctrine
             ->getRepository('StmolHuddleBundle:Meeting')
-            ->findOneBy($testData);
+            ->findOneBy($fixtures);
 
-        $this->assertEquals(1, count($meeting));
         $this->assertInstanceOf('Stmol\HuddleBundle\Entity\Meeting', $meeting);
     }
 }

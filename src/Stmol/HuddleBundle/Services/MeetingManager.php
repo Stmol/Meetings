@@ -17,17 +17,13 @@ class MeetingManager
     /**
      * Create new meeting.
      *
-     * @param array $data
+     * @param \Stmol\HuddleBundle\Entity\Meeting $meeting
      * @param bool $flush
      */
-    public function create(array $data, $flush = true)
+    public function createMeeting(Meeting $meeting, $flush = true)
     {
-        $meeting = new Meeting();
-        $meeting->setTitle($data['title']);
-        $meeting->setDescription($data['description']);
         // TODO (Stmol) Check unique URL address before persist
         $meeting->setUrl($this->_generateRandString());
-        $meeting->setStartDate($data['startDate']);
 
         $this->_entityManager->persist($meeting);
 
