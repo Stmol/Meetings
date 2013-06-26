@@ -2,6 +2,9 @@ parameters:
 #    stmol_huddle.example.class: Stmol\HuddleBundle\Example
 
 services:
+    stmol_huddle.meetings_manager:
+        class: Stmol\HuddleBundle\Services\MeetingManager
+        arguments: ["@doctrine.orm.entity_manager"]
 #    stmol_huddle.example:
 #        class: %stmol_huddle.example.class%
 #        arguments: [@service_id, "plain_value", %parameter%]

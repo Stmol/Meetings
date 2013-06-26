@@ -4,10 +4,12 @@ namespace Stmol\HuddleBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use Doctrine\ORM\Mapping\UniqueConstraint;
+
 /**
  * Meeting
  *
- * @ORM\Table(name="meetings")
+ * @ORM\Table(name="meetings",uniqueConstraints={@UniqueConstraint(name="url_idx", columns={"url"})})
  * @ORM\Entity(repositoryClass="Stmol\HuddleBundle\Entity\Repository\MeetingRepository")
  */
 class Meeting

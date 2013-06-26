@@ -1,6 +1,6 @@
 <?php
 
-namespace Stmol\HuddleBundle\Entity;
+namespace Stmol\HuddleBundle\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
 
