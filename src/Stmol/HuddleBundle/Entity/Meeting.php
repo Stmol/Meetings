@@ -2,6 +2,7 @@
 
 namespace Stmol\HuddleBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping\ManyToOne;
@@ -61,6 +62,13 @@ class Meeting
     private $createDate;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="secret", type="string", length=40)
+     */
+    private $secret;
+
+    /**
      * @ManyToOne(targetEntity="Member", cascade={"all"}, fetch="EAGER")
      */
     private $author;
@@ -75,6 +83,8 @@ class Meeting
     public function __construct()
     {
         $this->createDate = new \DateTime();
+        $this->members = new ArrayCollection();
+        $this->secret = sha1(uniqid(mt_rand(), true));
     }
 
     /**
@@ -256,5 +266,28 @@ class Meeting
     public function getMembers()
     {
         return $this->members;
+    }
+
+    /**
+     * Set secret
+     *
+     * @param string $secret
+     * @return Meeting
+     */
+    public function setSecret($secret)
+    {
+        $this->secret = $secret;
+    
+        return $this;
+    }
+
+    /**
+     * Get secret
+     *
+     * @return string 
+     */
+    public function getSecret()
+    {
+        return $this->secret;
     }
 }

@@ -28,6 +28,7 @@ class MemberManager
      *
      * @param Member $member
      * @param bool $flush
+     * @return \Stmol\HuddleBundle\Entity\Member
      */
     public function createMember(Member $member, $flush = true)
     {
@@ -36,5 +37,7 @@ class MemberManager
         if ($flush) {
             $this->_entityManager->flush();
         }
+
+        return $member;
     }
 }

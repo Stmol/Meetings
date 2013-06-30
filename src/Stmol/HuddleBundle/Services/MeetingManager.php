@@ -24,6 +24,7 @@ class MeetingManager
      * @param \Stmol\HuddleBundle\Entity\Meeting $meeting
      * @param \Stmol\HuddleBundle\Entity\Member $author
      * @param bool $flush
+     * @return \Stmol\HuddleBundle\Entity\Meeting
      */
     public function createMeeting(Meeting $meeting, Member $author, $flush = true)
     {
@@ -36,6 +37,8 @@ class MeetingManager
         if ($flush) {
             $this->_entityManager->flush();
         }
+
+        return $meeting;
     }
 
     /**

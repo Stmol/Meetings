@@ -2,6 +2,7 @@
 
 namespace Stmol\HuddleBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\JoinTable;
@@ -66,6 +67,7 @@ class Member
     public function __construct()
     {
         $this->createDate = new \DateTime();
+        $this->meetings = new ArrayCollection();
     }
 
     /**
