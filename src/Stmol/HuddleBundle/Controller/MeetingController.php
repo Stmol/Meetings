@@ -6,7 +6,9 @@ use Stmol\HuddleBundle\Form\NewMeetingType;
 use Stmol\HuddleBundle\Services\MeetingManager;
 use Stmol\HuddleBundle\Services\MemberManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class MeetingController extends Controller
 {
@@ -28,8 +30,35 @@ class MeetingController extends Controller
             /** @var MeetingManager $meetingManager */
             $meetingManager = $this->get('stmol_huddle.meeting_manager');
 
-            $memberManager->createMember($form->get('author')->getData());
-            $meetingManager->createMeeting($form->get('meeting')->getData(), $form->get('author')->getData());
+            $member = $memberManager->createMember($form->get('author')->getData());
+            $meeting = $meetingManager->createMeeting($form->get('meeting')->getData(), $member);
+
+            $message = \Swift_Message::newInstance()
+                ->setSubject($meeting->getTitle())
+                // TODO (Stmol) Define global param with email address
+                ->setFrom('meetings@stmol.me')
+                ->setTo($member->getEmail())
+                ->setBody(
+                    $this->renderView(
+                        'StmolHuddleBundle:Meeting:email.txt.twig',
+                        array(
+                            'author'  => $member,
+                            'meeting' => $meeting,
+                        )
+                    )
+                );
+
+            $this->get('mailer')->send($message);
+
+            $cookie = array(
+                'name'  => 'meeting_' . $meeting->getId(),
+                'value' => $meeting->getSecret(),
+            );
+
+            $response = new Response();
+            // TODO (Stmol) Other arguments for Cookie!
+            $response->headers->setCookie(new Cookie($cookie['name'], $cookie['value']));
+            $response->sendHeaders();
 
             return $this->redirect('/');
         }

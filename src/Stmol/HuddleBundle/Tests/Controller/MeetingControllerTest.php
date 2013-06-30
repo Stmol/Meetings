@@ -2,6 +2,8 @@
 
 namespace Stmol\HuddleBundle\Tests\Controller;
 
+use Stmol\HuddleBundle\Entity\Meeting;
+use Stmol\HuddleBundle\Entity\Member;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class MeetingControllerTest extends WebTestCase
@@ -51,6 +53,7 @@ class MeetingControllerTest extends WebTestCase
         );
 
         // Assert author
+        /** @var Member $authorTest */
         $authorTest = $this->_doctrine
             ->getRepository('StmolHuddleBundle:Member')
             ->findOneBy(
@@ -61,6 +64,7 @@ class MeetingControllerTest extends WebTestCase
                 )
             );
 
+        /** @var Meeting $meetingTest */
         $meetingTest = $this->_doctrine
             ->getRepository('StmolHuddleBundle:Meeting')
             ->findOneBy(
@@ -73,6 +77,8 @@ class MeetingControllerTest extends WebTestCase
 
         $this->assertInstanceOf('Stmol\HuddleBundle\Entity\Member', $authorTest);
         $this->assertInstanceOf('Stmol\HuddleBundle\Entity\Meeting', $meetingTest);
+
+        // TODO (Stmol) make test for cookies!
 
         $this->assertTrue($client->getResponse()->isRedirect());
     }
