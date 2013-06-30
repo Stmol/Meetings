@@ -2,13 +2,24 @@ parameters:
 #    stmol_huddle.example.class: Stmol\HuddleBundle\Example
 
 services:
-    stmol_huddle.meetings_manager:
+    # Service: MeetingManager
+    stmol_huddle.meeting_manager:
         class: Stmol\HuddleBundle\Services\MeetingManager
         arguments: ["@doctrine.orm.entity_manager"]
+    # Service: MemberManager
+    stmol_huddle.member_manager:
+        class: Stmol\HuddleBundle\Services\MemberManager
+        arguments: ["@doctrine.orm.entity_manager"]
+    # Form: Meeting
     stmol_huddle.form.type.meeting:
         class: Stmol\HuddleBundle\Form\MeetingType
         tags:
             - { name: form.type, alias: meeting }
+    # Form: Member
+    stmol_huddle.form.type.member:
+        class: Stmol\HuddleBundle\Form\MemberType
+        tags:
+            - { name: form.type, alias: member }
 #    stmol_huddle.example:
 #        class: %stmol_huddle.example.class%
 #        arguments: [@service_id, "plain_value", %parameter%]

@@ -3,6 +3,7 @@
 namespace Stmol\HuddleBundle\Tests\Services;
 
 use Stmol\HuddleBundle\Entity\Meeting;
+use Stmol\HuddleBundle\Entity\Member;
 use Stmol\HuddleBundle\Services\MeetingManager;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -25,31 +26,46 @@ class MeetingManagerTest extends WebTestCase
     }
 
     /**
-     * Test method createMeeting.
+     * @dataProvider providerMeetings
+     * @param $title
+     * @param $description
+     * @param $startDate
      */
-    public function testCreate()
+    public function testCreateMeeting($title, $description, $startDate)
     {
+        $meeting = new Meeting();
+        $meeting->setTitle($title);
+        $meeting->setDescription($description);
+        $meeting->setStartDate($startDate);
+
+        $author = new Member();
+        $author->setEmail('test@test.com');
+        $author->setName('Name');
+        $author->setSurname('Surname');
+
         $meetingManager = new MeetingManager($this->_doctrine->getManager());
-
-        $fixtures = array(
-            'title'       => 'testTitle',
-            'description' => 'testDescription',
-            'startDate'   => new \DateTime()
-        );
-
-        // Create new meeting
-        $testMeeting = new Meeting();
-        $testMeeting->setTitle($fixtures['title']);
-        $testMeeting->setDescription($fixtures['description']);
-        $testMeeting->setStartDate($fixtures['startDate']);
-
-        $meetingManager->createMeeting($testMeeting);
+        $meetingManager->createMeeting($meeting, $author);
 
         // Test new record
-        $meeting = $this->_doctrine
+        $testMeeting = $this->_doctrine
             ->getRepository('StmolHuddleBundle:Meeting')
-            ->findOneBy($fixtures);
+            ->findOneBy(
+                array(
+                    'title'       => $title,
+                    'description' => $description,
+                    'startDate'   => $startDate,
+                )
+            );
 
-        $this->assertInstanceOf('Stmol\HuddleBundle\Entity\Meeting', $meeting);
+        $this->assertInstanceOf('Stmol\HuddleBundle\Entity\Meeting', $testMeeting);
+    }
+
+    public function providerMeetings()
+    {
+        return array(
+            array('Test title', 'Test description', new \DateTime()),
+            array('Test title2', 1234567890, new \DateTime()),
+            array(123, 'TEST DESCRIPTION', new \DateTime()),
+        );
     }
 }

@@ -42,6 +42,17 @@ class Member
      */
     private $surname;
 
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="create_date", type="datetime")
+     */
+    private $createDate;
+
+    public function __construct()
+    {
+        $this->createDate = new \DateTime();
+    }
 
     /**
      * Get id
@@ -120,5 +131,28 @@ class Member
     public function getSurname()
     {
         return $this->surname;
+    }
+
+    /**
+     * Set createDate
+     *
+     * @param \DateTime $createDate
+     * @return Member
+     */
+    public function setCreateDate($createDate)
+    {
+        $this->createDate = $createDate;
+    
+        return $this;
+    }
+
+    /**
+     * Get createDate
+     *
+     * @return \DateTime 
+     */
+    public function getCreateDate()
+    {
+        return $this->createDate;
     }
 }

@@ -1,4 +1,8 @@
 <?php
+/**
+ * Created by Stmol.
+ * Date: 30.06.13
+ */
 
 namespace Stmol\HuddleBundle\Form;
 
@@ -6,18 +10,14 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class MeetingType extends AbstractType
+class MemberType extends AbstractType
 {
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', 'text')
-            ->add('description', 'textarea')
-            ->add('startDate', 'date')
+            ->add('email', 'email')
+            ->add('name', 'text')
+            ->add('surname', 'text')
         ;
     }
 
@@ -26,9 +26,11 @@ class MeetingType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'Stmol\HuddleBundle\Entity\Meeting',
-        ));
+        $resolver->setDefaults(
+            array(
+                'data_class' => 'Stmol\HuddleBundle\Entity\Member',
+            )
+        );
     }
 
     /**
@@ -38,6 +40,6 @@ class MeetingType extends AbstractType
      */
     public function getName()
     {
-        return 'meeting';
+        return 'member';
     }
 }

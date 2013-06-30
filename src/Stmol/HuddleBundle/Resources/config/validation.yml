@@ -5,3 +5,27 @@ Stmol\HuddleBundle\Entity\Meeting:
         startDate:
             - NotBlank: ~
             - Type: \DateTime
+
+Stmol\HuddleBundle\Entity\Member:
+    properties:
+        email:
+            - NotBlank: ~
+            - Email:
+                message: The email "{{ value }}" is not a valid email.
+                checkMX: false
+        name:
+            - NotBlank: ~
+            - Length:
+                min: 2
+                max: 15
+                minMessage: "Your name must be at least {{ limit }} characters length"
+                maxMessage: "Your name cannot be longer than {{ limit }} characters length"
+        surname:
+            - Length:
+                min: 2
+                max: 20
+                minMessage: "Your surname must be at least {{ limit }} characters length"
+                maxMessage: "Your surname cannot be longer than {{ limit }} characters length"
+        createDate:
+            - NotBlank: ~
+            - Type: \DateTime

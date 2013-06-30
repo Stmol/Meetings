@@ -3,7 +3,8 @@
 namespace Stmol\HuddleBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
@@ -57,6 +58,11 @@ class Meeting
      * @ORM\Column(name="create_date", type="datetime")
      */
     private $createDate;
+
+    /**
+     * @ManyToOne(targetEntity="Member", cascade={"all"}, fetch="EAGER")
+     */
+    private $author;
 
     public function __construct()
     {
@@ -186,5 +192,28 @@ class Meeting
     public function getCreateDate()
     {
         return $this->createDate;
+    }
+
+    /**
+     * Set author
+     *
+     * @param string $author
+     * @return Meeting
+     */
+    public function setAuthor($author)
+    {
+        $this->author = $author;
+    
+        return $this;
+    }
+
+    /**
+     * Get author
+     *
+     * @return string 
+     */
+    public function getAuthor()
+    {
+        return $this->author;
     }
 }
