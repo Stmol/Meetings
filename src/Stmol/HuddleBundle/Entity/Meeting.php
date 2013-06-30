@@ -5,6 +5,7 @@ namespace Stmol\HuddleBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
@@ -63,6 +64,13 @@ class Meeting
      * @ManyToOne(targetEntity="Member", cascade={"all"}, fetch="EAGER")
      */
     private $author;
+
+    /**
+     * Inverse Side
+     *
+     * @ManyToMany(targetEntity="Member", mappedBy="meetings")
+     */
+    private $members;
 
     public function __construct()
     {
@@ -215,5 +223,38 @@ class Meeting
     public function getAuthor()
     {
         return $this->author;
+    }
+
+    /**
+     * Add members
+     *
+     * @param \Stmol\HuddleBundle\Entity\Member $members
+     * @return Meeting
+     */
+    public function addMember(\Stmol\HuddleBundle\Entity\Member $members)
+    {
+        $this->members[] = $members;
+    
+        return $this;
+    }
+
+    /**
+     * Remove members
+     *
+     * @param \Stmol\HuddleBundle\Entity\Member $members
+     */
+    public function removeMember(\Stmol\HuddleBundle\Entity\Member $members)
+    {
+        $this->members->removeElement($members);
+    }
+
+    /**
+     * Get members
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getMembers()
+    {
+        return $this->members;
     }
 }

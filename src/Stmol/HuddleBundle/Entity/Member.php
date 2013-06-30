@@ -3,6 +3,9 @@
 namespace Stmol\HuddleBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\ManyToMany;
+use Doctrine\ORM\Mapping\JoinTable;
+use Doctrine\ORM\Mapping\JoinColumn;
 
 /**
  * Member
@@ -48,6 +51,17 @@ class Member
      * @ORM\Column(name="create_date", type="datetime")
      */
     private $createDate;
+
+    /**
+     * Owning Side
+     *
+     * @ManyToMany(targetEntity="Meeting", inversedBy="members")
+     * @JoinTable(name="member_meetings",
+     *      joinColumns={@JoinColumn(name="member_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@JoinColumn(name="meeting_id", referencedColumnName="id")}
+     *      )
+     */
+    private $meetings;
 
     public function __construct()
     {
@@ -154,5 +168,38 @@ class Member
     public function getCreateDate()
     {
         return $this->createDate;
+    }
+
+    /**
+     * Add meetings
+     *
+     * @param \Stmol\HuddleBundle\Entity\Meeting $meetings
+     * @return Member
+     */
+    public function addMeeting(\Stmol\HuddleBundle\Entity\Meeting $meetings)
+    {
+        $this->meetings[] = $meetings;
+    
+        return $this;
+    }
+
+    /**
+     * Remove meetings
+     *
+     * @param \Stmol\HuddleBundle\Entity\Meeting $meetings
+     */
+    public function removeMeeting(\Stmol\HuddleBundle\Entity\Meeting $meetings)
+    {
+        $this->meetings->removeElement($meetings);
+    }
+
+    /**
+     * Get meetings
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getMeetings()
+    {
+        return $this->meetings;
     }
 }
