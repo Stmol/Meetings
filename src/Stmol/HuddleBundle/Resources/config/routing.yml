@@ -2,3 +2,8 @@ new_meeting:
     path: /new
     defaults:
         _controller: StmolHuddleBundle:Meeting:new
+
+show_meeting:
+    path: /m/{unique}
+    defaults:
+        _controller: StmolHuddleBundle:Meeting:show

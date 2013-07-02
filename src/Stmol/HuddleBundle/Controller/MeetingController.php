@@ -2,14 +2,20 @@
 
 namespace Stmol\HuddleBundle\Controller;
 
-use Stmol\HuddleBundle\Form\NewMeetingType;
+use Stmol\HuddleBundle\Entity\Meeting;
 use Stmol\HuddleBundle\Services\MeetingManager;
 use Stmol\HuddleBundle\Services\MemberManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * Class MeetingController
+ * @package Stmol\HuddleBundle\Controller
+ * @author Yury [Stmol] Smidovich
+ */
 class MeetingController extends Controller
 {
     /**
@@ -20,7 +26,7 @@ class MeetingController extends Controller
      */
     public function newAction(Request $request)
     {
-        $form = $this->createForm(new NewMeetingType());
+        $form = $this->createForm('new_meeting');
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -67,6 +73,41 @@ class MeetingController extends Controller
             'StmolHuddleBundle:Meeting:index.html.twig',
             array(
                 'form' => $form->createView(),
+            )
+        );
+    }
+
+    /**
+     * @param Request $request
+     * @param $unique
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @return Response
+     */
+    public function showAction(Request $request, $unique)
+    {
+        /** @var Meeting $meeting */
+        $meeting = $this->getDoctrine()
+            ->getRepository('StmolHuddleBundle:Meeting')
+            ->findOneBy(array('url' => $unique));
+
+        if (!$meeting) {
+            // TODO (Stmol) translate
+            throw new NotFoundHttpException('Meeting not found!');
+        }
+
+        $form = $this->createForm('member');
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            /** @var MemberManager $memberManager */
+            $memberManager = $this->get('stmol_huddle.member_manager');
+            $memberManager->createMember($form->getData(), $meeting);
+        }
+
+        return $this->render(
+            'StmolHuddleBundle:Meeting:show.html.twig', array(
+                'form'    => $form->createView(),
+                'meeting' => $meeting,
             )
         );
     }

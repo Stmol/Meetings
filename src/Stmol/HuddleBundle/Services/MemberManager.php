@@ -2,6 +2,7 @@
 
 namespace Stmol\HuddleBundle\Services;
 
+use Stmol\HuddleBundle\Entity\Meeting;
 use Stmol\HuddleBundle\Entity\Member;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -30,8 +31,12 @@ class MemberManager
      * @param bool $flush
      * @return \Stmol\HuddleBundle\Entity\Member
      */
-    public function createMember(Member $member, $flush = true)
+    public function createMember(Member $member, Meeting $meeting = null, $flush = true)
     {
+        if ($meeting) {
+            $member->addMeeting($meeting);
+        }
+
         $this->_entityManager->persist($member);
 
         if ($flush) {

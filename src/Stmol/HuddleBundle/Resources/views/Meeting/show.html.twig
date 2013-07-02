@@ -1,0 +1,27 @@
+{% extends "::base.html.twig" %}
+
+{% block body %}
+    <h2>Meeting page</h2>
+
+    <h3>{{ meeting.title }}</h3>
+    <p>{{ meeting.description }}</p>
+    <p>{{ meeting.startDate|date }}</p>
+
+    {% for member in meeting.members %}
+        <ul>
+            <li>{{ member.email }}</li>
+            <li>{{ member.name }}</li>
+            <li>{{ member.surname }}</li>
+        </ul>
+    {% endfor %}
+
+    {{ form_start(form) }}
+        {{ form_errors(form) }}
+
+        {{ form_row(form.email) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.surname) }}
+
+        <input type="submit" value="Submit"/>
+    {{ form_end(form) }}
+{% endblock %}

@@ -17,8 +17,11 @@ class MemberType extends AbstractType
         $builder
             ->add('email', 'email')
             ->add('name', 'text')
-            ->add('surname', 'text')
-        ;
+            ->add(
+                'surname', 'text', array(
+                    'required' => false
+                )
+            );
     }
 
     /**
