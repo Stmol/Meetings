@@ -42,6 +42,29 @@ class MeetingManager
     }
 
     /**
+     * Update meeting.
+     *
+     * @param Meeting $meeting
+     * @param Member $author
+     * @param bool $flush
+     * @return Meeting
+     */
+    public function updateMeeting(Meeting $meeting, Member $author = null, $flush = true)
+    {
+        if ($author) {
+            $meeting->addMember($author);
+        }
+
+        $this->_entityManager->persist($meeting);
+
+        if ($flush) {
+            $this->_entityManager->flush();
+        }
+
+        return $meeting;
+    }
+
+    /**
      * Generate random string for URL.
      *
      * @param int $length

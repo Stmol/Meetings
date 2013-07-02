@@ -1,0 +1,24 @@
+{% extends "::base.html.twig" %}
+
+{% block body %}
+    Edit meeting: {{ meeting.title }}
+
+    {{ form_start(form) }}
+        {{ form_errors(form) }}
+
+        {{ form_row(form.title) }}
+        {{ form_row(form.description) }}
+        {{ form_row(form.startDate) }}
+
+        <input type="submit" value="Submit"/>
+    {{ form_end(form) }}
+
+    {% for member in meeting.members %}
+        <ul>
+            <li>{{ member.email }}</li>
+            <li>{{ member.name }}</li>
+            <li>{{ member.surname }}</li>
+            <li><a href="#">Исключить</a></li>
+        </ul>
+    {% endfor %}
+{% endblock %}

@@ -4,6 +4,11 @@ new_meeting:
         _controller: StmolHuddleBundle:Meeting:new
 
 show_meeting:
-    path: /m/{unique}
+    path: /m/{url}
     defaults:
         _controller: StmolHuddleBundle:Meeting:show
+
+edit_meeting:
+    path: /m/{url}/edit
+    defaults:
+        _controller: StmolHuddleBundle:Meeting:edit

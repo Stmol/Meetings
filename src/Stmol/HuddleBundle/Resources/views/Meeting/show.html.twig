@@ -1,7 +1,7 @@
 {% extends "::base.html.twig" %}
 
 {% block body %}
-    <h2>Meeting page</h2>
+    <h2>Meeting page</h2><a href="{{ path('edit_meeting',  { 'url':meeting.url }) }}">Изменить</a>
 
     <h3>{{ meeting.title }}</h3>
     <p>{{ meeting.description }}</p>

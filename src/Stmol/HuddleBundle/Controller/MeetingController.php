@@ -79,16 +79,16 @@ class MeetingController extends Controller
 
     /**
      * @param Request $request
-     * @param $unique
+     * @param $url
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      * @return Response
      */
-    public function showAction(Request $request, $unique)
+    public function showAction(Request $request, $url)
     {
         /** @var Meeting $meeting */
         $meeting = $this->getDoctrine()
             ->getRepository('StmolHuddleBundle:Meeting')
-            ->findOneBy(array('url' => $unique));
+            ->findOneBy(array('url' => $url));
 
         if (!$meeting) {
             // TODO (Stmol) translate
@@ -108,6 +108,54 @@ class MeetingController extends Controller
             'StmolHuddleBundle:Meeting:show.html.twig', array(
                 'form'    => $form->createView(),
                 'meeting' => $meeting,
+            )
+        );
+    }
+
+    /**
+     * @param Request $request
+     * @param $url
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @return Response
+     */
+    public function editAction(Request $request, $url)
+    {
+        /** @var Meeting $meeting */
+        $meeting = $this->getDoctrine()
+            ->getRepository('StmolHuddleBundle:Meeting')
+            ->findOneBy(array('url' => $url));
+
+        if (!$meeting) {
+            throw new NotFoundHttpException('Meeting with url ' . $url . ' not found');
+        }
+
+        // Secure zone:
+        // - meeting may be changed only one
+        // - who has the cookies with a secret key
+        $cookie = $this->getRequest()->cookies;
+
+        if (!$cookie->has('meeting_' . $meeting->getId()) OR $cookie->get('meeting_' . $meeting->getId()) !== $meeting->getSecret()) {
+            return $this->redirect($this->generateUrl('show_meeting', array('url' => $meeting->getUrl())));
+        }
+
+        $form = $this->createForm('meeting', $meeting);
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            /** @var MeetingManager $meetingManager */
+            $meetingManager = $this->get('stmol_huddle.meeting_manager');
+            $meetingManager->updateMeeting($meeting);
+
+            // TODO (Stmol) do it through MeetingManager or as a way!
+//            $manager = $this->getDoctrine()->getManager();
+//            $manager->persist($meeting);
+//            $manager->flush();
+        }
+
+        return $this->render(
+            'StmolHuddleBundle:Meeting:edit.html.twig', array(
+                'meeting' => $meeting,
+                'form'    => $form->createView(),
             )
         );
     }

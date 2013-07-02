@@ -92,7 +92,7 @@ class MeetingControllerTest extends WebTestCase
         /** @var Meeting $meeting */
         $meeting = $this->_doctrine
             ->getRepository('StmolHuddleBundle:Meeting')
-            ->findOneById(1);
+            ->find(1);
 
         $client = static::createClient();
         $crawler = $client->request('GET', '/m/' . $meeting->getUrl());
@@ -135,6 +135,25 @@ class MeetingControllerTest extends WebTestCase
         $this->assertInstanceOf('Stmol\HuddleBundle\Entity\Member', $memberTest);
     }
 
+    public function testEdit()
+    {
+        /** @var Meeting $meeting */
+        $meeting = $this->_doctrine
+            ->getRepository('StmolHuddleBundle:Meeting')
+            ->find(1);
+
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/m/'.$meeting->getUrl().'/edit');
+
+        // Assert code 200
+        // $this->assertTrue($client->getResponse()->isOk());
+    }
+
+    /**
+     * Data provider for testNew.
+     *
+     * @return array
+     */
     public function providerNewMeetings()
     {
         return array(
@@ -155,6 +174,11 @@ class MeetingControllerTest extends WebTestCase
         );
     }
 
+    /**
+     * Data provider for testShow.
+     *
+     * @return array
+     */
     public function providerNewMembers()
     {
         return array(

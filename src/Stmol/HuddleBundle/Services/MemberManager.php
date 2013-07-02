@@ -28,6 +28,7 @@ class MemberManager
      * Create new member.
      *
      * @param Member $member
+     * @param \Stmol\HuddleBundle\Entity\Meeting $meeting
      * @param bool $flush
      * @return \Stmol\HuddleBundle\Entity\Member
      */
