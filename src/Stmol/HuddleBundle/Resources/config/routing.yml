@@ -1,3 +1,8 @@
+default:
+    path: /
+    defaults:
+        _controller: StmolHuddleBundle:Default:index
+
 new_meeting:
     path: /new
     defaults:
