@@ -7,13 +7,17 @@ security:
         ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
 
     providers:
-        in_memory:
-            memory:
-                users:
-                    user:  { password: userpass, roles: [ 'ROLE_USER' ] }
-                    admin: { password: adminpass, roles: [ 'ROLE_ADMIN' ] }
+        members:
+            entity: { class: Stmol\HuddleBundle\Entity\Member, property: secret }
+#        webservice:
+#            id: user_provider
+
 
     firewalls:
+        secured_by_cookie:
+            pattern: /
+            by_cookie: true
+
         dev:
             pattern:  ^/(_(profiler|wdt)|css|images|js)/
             security: false

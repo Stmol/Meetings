@@ -1,4 +1,5 @@
 parameters:
+    stmol_huddle.cookie.user_secret: "user"
 #    stmol_huddle.example.class: Stmol\HuddleBundle\Example
 
 services:
@@ -25,6 +26,18 @@ services:
         class: Stmol\HuddleBundle\Form\NewMeetingType
         tags:
             - { name: form.type, alias: new_meeting }
+    # Custom user provider
+    #stmol_huddle.user_provider:
+    #    class: Stmol\HuddleBundle\Security\User\UserProvider
+    #    arguments: ["@doctrine.orm.entity_manager"]
+    # Authentication provider by cookie
+    by_cookie.security.authentication.provider:
+        class:  Stmol\HuddleBundle\Security\Authentication\Provider\CookieAuthenticationProvider
+        arguments: [""]
+    # Authentication listener by cookie
+    by_cookie.security.authentication.listener:
+        class:  Stmol\HuddleBundle\Security\Firewall\CookieAuthenticationListener
+        arguments: ["@security.context", "@security.authentication.manager", %stmol_huddle.cookie.user_secret%]
 #    stmol_huddle.example:
 #        class: %stmol_huddle.example.class%
 #        arguments: [@service_id, "plain_value", %parameter%]
