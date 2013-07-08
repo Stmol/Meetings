@@ -5,6 +5,7 @@ namespace Stmol\HuddleBundle\Tests\Services;
 use Stmol\HuddleBundle\Entity\Meeting;
 use Stmol\HuddleBundle\Entity\Member;
 use Stmol\HuddleBundle\Services\MeetingManager;
+use Stmol\HuddleBundle\Services\MemberManager;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class MeetingManagerTest extends WebTestCase
@@ -26,46 +27,131 @@ class MeetingManagerTest extends WebTestCase
     }
 
     /**
-     * @dataProvider providerMeetings
-     * @param $title
-     * @param $description
-     * @param $startDate
+     * @dataProvider providerCreateMeeting
+     * @param \Stmol\HuddleBundle\Entity\Meeting $meeting
+     * @param \Stmol\HuddleBundle\Entity\Member $author
      */
-    public function testCreateMeeting($title, $description, $startDate)
+    public function testCreateMeeting(Meeting $meeting, Member $author)
     {
-        $meeting = new Meeting();
-        $meeting->setTitle($title);
-        $meeting->setDescription($description);
-        $meeting->setStartDate($startDate);
-
-        $author = new Member();
-        $author->setEmail('test@test.com');
-        $author->setName('Name');
-        $author->setSurname('Surname');
-
         $meetingManager = new MeetingManager($this->_doctrine->getManager());
-        $meetingManager->createMeeting($meeting, $author);
+        $meetingManager->createMeeting($meeting);
 
         // Test new record
         $testMeeting = $this->_doctrine
             ->getRepository('StmolHuddleBundle:Meeting')
             ->findOneBy(
                 array(
-                    'title'       => $title,
-                    'description' => $description,
-                    'startDate'   => $startDate,
+                    'title'       => $meeting->getTitle(),
+                    'description' => $meeting->getDescription(),
+                    'startDate'   => $meeting->getStartDate(),
                 )
             );
 
         $this->assertInstanceOf('Stmol\HuddleBundle\Entity\Meeting', $testMeeting);
     }
 
-    public function providerMeetings()
+    /**
+     * Test addAuthor method.
+     *
+     * @dataProvider providerAddAuthor
+     * @param Meeting $meeting
+     * @param Member $member
+     */
+    public function testAddAuthor(Meeting $meeting, Member $member)
     {
+        $meetingManager = new MeetingManager($this->_doctrine->getManager());
+        $memberManager = new MemberManager($this->_doctrine->getManager());
+
+        $meetingManager->createMeeting($meeting);
+        $memberManager->createMember($member);
+
+        $meetingManager->addAuthor($meeting, $member);
+
+        $relation = $this->_doctrine->getManager()
+            ->getRepository('StmolHuddleBundle:MemberMeetingRole')
+            ->findOneBy(
+                array(
+                    'member'  => $member,
+                    'meeting' => $meeting,
+                    'role'    => 1,
+                )
+            );
+
+        $this->assertInstanceOf('Stmol\HuddleBundle\Entity\MemberMeetingRole', $relation);
+    }
+
+
+    /**
+     * Test addMember method.
+     *
+     * TODO (Stmol) make separate data provider
+     * @dataProvider providerAddAuthor
+     * @param Meeting $meeting
+     * @param Member $member
+     */
+    public function testAddMember(Meeting $meeting, Member $member)
+    {
+        $meetingManager = new MeetingManager($this->_doctrine->getManager());
+        $memberManager = new MemberManager($this->_doctrine->getManager());
+
+        $meetingManager->createMeeting($meeting);
+        $memberManager->createMember($member);
+
+        $meetingManager->addMember($meeting, $member);
+
+        $relation = $this->_doctrine->getManager()
+            ->getRepository('StmolHuddleBundle:MemberMeetingRole')
+            ->findOneBy(
+                array(
+                    'meeting' => $meeting,
+                    'member'  => $member,
+                    'state'   => 1,
+                    'role'    => 0
+                )
+            );
+
+        $this->assertInstanceOf('Stmol\HuddleBundle\Entity\MemberMeetingRole', $relation);
+    }
+
+    /**
+     * @return array
+     */
+    public function providerAddAuthor()
+    {
+        $firstMeeting = new Meeting();
+        $firstMeeting->setTitle('Test title');
+        $firstMeeting->setDescription('Test description');
+        $firstMeeting->setStartDate(new \DateTime());
+
+        $firstMember = new Member();
+        $firstMember->setEmail('test@test.com');
+        $firstMember->setName('Test name');
+        $firstMember->setSurname('Test surname');
+
         return array(
-            array('Test title', 'Test description', new \DateTime()),
-            array('Test title2', 1234567890, new \DateTime()),
-            array(123, 'TEST DESCRIPTION', new \DateTime()),
+            # 1
+            array($firstMeeting, $firstMember),
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function providerCreateMeeting()
+    {
+        $firstMeeting = new Meeting();
+        $firstMeeting->setTitle('TestMeeting');
+        $firstMeeting->setDescription('TestDescription');
+        $firstMeeting->setStartDate(new \DateTime());
+
+        $firstMember = new Member();
+        $firstMember->setEmail('test123@test.com');
+        $firstMember->setName('TestNameUser');
+        $firstMember->setSurname('Noname');
+
+        return array(
+            # 1
+            array($firstMeeting, $firstMember),
         );
     }
 }

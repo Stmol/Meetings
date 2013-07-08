@@ -5,6 +5,7 @@ namespace Stmol\HuddleBundle\Services;
 use Doctrine\Common\Persistence\ObjectManager;
 use Stmol\HuddleBundle\Entity\Meeting;
 use Stmol\HuddleBundle\Entity\Member;
+use Stmol\HuddleBundle\Entity\MemberMeetingRole;
 
 class MeetingManager
 {
@@ -26,16 +27,19 @@ class MeetingManager
      * @param bool $flush
      * @return \Stmol\HuddleBundle\Entity\Meeting
      */
-    public function createMeeting(Meeting $meeting, Member $author, $flush = true)
+    public function createMeeting(Meeting $meeting, Member $author = null, $flush = true)
     {
         // TODO (Stmol) Check unique URL address before persist
         $meeting->setUrl($this->_generateRandString());
-        $meeting->setAuthor($author);
 
         $this->_entityManager->persist($meeting);
 
         if ($flush) {
             $this->_entityManager->flush();
+        }
+
+        if ($author) {
+            $this->addAuthor($meeting, $author);
         }
 
         return $meeting;
@@ -62,6 +66,53 @@ class MeetingManager
         }
 
         return $meeting;
+    }
+
+    /**
+     * Add author (organizer) to meeting.
+     *
+     * @param Meeting $meeting
+     * @param Member $author
+     * @param $flush
+     * @return \Stmol\HuddleBundle\Entity\MemberMeetingRole
+     */
+    public function addAuthor(Meeting $meeting, Member $author, $flush = true)
+    {
+        $relation = new MemberMeetingRole();
+        $relation->setMeeting($meeting);
+        $relation->setMember($author);
+        $relation->setRole(1);
+
+        $this->_entityManager->persist($relation);
+
+        if ($flush) {
+            $this->_entityManager->flush();
+        }
+
+        return $relation;
+    }
+
+    /**
+     * Add member to meeting.
+     *
+     * @param Meeting $meeting
+     * @param Member $member
+     * @param bool $flush
+     * @return MemberMeetingRole
+     */
+    public function addMember(Meeting $meeting, Member $member, $flush = true)
+    {
+        $relation = new MemberMeetingRole();
+        $relation->setMeeting($meeting);
+        $relation->setMember($member);
+
+        $this->_entityManager->persist($relation);
+
+        if ($flush) {
+            $this->_entityManager->flush();
+        }
+
+        return $relation;
     }
 
     /**

@@ -1,17 +1,24 @@
 {% extends "::base.html.twig" %}
 
 {% block body %}
-    <h2>Meeting page</h2><a href="{{ path('edit_meeting',  { 'url':meeting.url }) }}">Изменить</a>
+    <h2>Meeting page</h2>
+
+    {% for rel in app.user.meetingRelations %}
+        {% if rel.meeting == meeting and rel.role == 1 %}
+            <a href="{{ path('edit_meeting',  { 'url':meeting.url }) }}">Изменить</a>
+        {% endif %}
+    {% endfor %}
 
     <h3>{{ meeting.title }}</h3>
     <p>{{ meeting.description }}</p>
     <p>{{ meeting.startDate|date }}</p>
 
-    {% for member in meeting.members %}
+    {% for relation in meeting.memberRelations %}
         <ul>
-            <li>{{ member.email }}</li>
-            <li>{{ member.name }}</li>
-            <li>{{ member.surname }}</li>
+            <li>{{ relation.member.email }}</li>
+            <li>{{ relation.member.name }}</li>
+            <li>{{ relation.member.surname }}</li>
+            {% if relation.role == 1 %}<li>Организатор</li>{% endif %}
         </ul>
     {% endfor %}
 

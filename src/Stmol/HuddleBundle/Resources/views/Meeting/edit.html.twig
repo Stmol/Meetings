@@ -13,11 +13,11 @@
         <input type="submit" value="Submit"/>
     {{ form_end(form) }}
 
-    {% for member in meeting.members %}
+    {% for relation in meeting.memberRelations if relation.member != app.user %}
         <ul>
-            <li>{{ member.email }}</li>
-            <li>{{ member.name }}</li>
-            <li>{{ member.surname }}</li>
+            <li>{{ relation.member.email }}</li>
+            <li>{{ relation.member.name }}</li>
+            <li>{{ relation.member.surname }}</li>
             <li><a href="#">Исключить</a></li>
         </ul>
     {% endfor %}

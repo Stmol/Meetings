@@ -26,7 +26,7 @@ class MeetingController extends Controller
      */
     public function newAction(Request $request)
     {
-        $form = $this->createForm('new_meeting');
+        $form = $this->createForm('new_meeting', array('member' => $this->getUser()));
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -36,7 +36,7 @@ class MeetingController extends Controller
             /** @var MeetingManager $meetingManager */
             $meetingManager = $this->get('stmol_huddle.meeting_manager');
 
-            $member = $memberManager->createMember($form->get('author')->getData());
+            $member = $memberManager->createMember($form->get('member')->getData());
             $meeting = $meetingManager->createMeeting($form->get('meeting')->getData(), $member);
 
             $message = \Swift_Message::newInstance()
@@ -56,21 +56,25 @@ class MeetingController extends Controller
 
             $this->get('mailer')->send($message);
 
-            $cookie = array(
-                'name'  => 'meeting_' . $meeting->getId(),
-                'value' => $meeting->getSecret(),
-            );
+            // Set the cookie with secret token
+            // TODO (Stmol) Make a service for this action
+            if (!$this->getRequest()->cookies->has($this->container->getParameter('stmol_huddle.cookie.user_secret'))) {
+                $response = new Response();
+                // TODO (Stmol) Other arguments for Cookie!
+                $response->headers->setCookie(
+                    new Cookie(
+                        $this->container->getParameter('stmol_huddle.cookie.user_secret'),
+                        $member->getSecret()
+                    )
+                );
+                $response->sendHeaders();
+            }
 
-            $response = new Response();
-            // TODO (Stmol) Other arguments for Cookie!
-            $response->headers->setCookie(new Cookie($cookie['name'], $cookie['value']));
-            $response->sendHeaders();
-
-            return $this->redirect('/');
+            return $this->redirect($this->generateUrl('show_meeting', array('url' => $meeting->getUrl())));
         }
 
         return $this->render(
-            'StmolHuddleBundle:Meeting:index.html.twig',
+            'StmolHuddleBundle:Meeting:new.html.twig',
             array(
                 'form' => $form->createView(),
             )
@@ -95,7 +99,7 @@ class MeetingController extends Controller
             throw new NotFoundHttpException('Meeting not found!');
         }
 
-        $form = $this->createForm('member');
+        $form = $this->createForm('member', $this->getUser());
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -134,7 +138,21 @@ class MeetingController extends Controller
         // - who has the cookies with a secret key
         $cookie = $this->getRequest()->cookies;
 
-        if (!$cookie->has('meeting_' . $meeting->getId()) OR $cookie->get('meeting_' . $meeting->getId()) !== $meeting->getSecret()) {
+        if (!$cookie->has($this->container->getParameter('stmol_huddle.cookie.user_secret'))) {
+            return $this->redirect($this->generateUrl('show_meeting', array('url' => $meeting->getUrl())));
+        }
+
+        $relation = $this->getDoctrine()
+            ->getRepository('StmolHuddleBundle:MemberMeetingRole')
+            ->findOneBy(
+                array(
+                    'member'  => $this->getUser(),
+                    'meeting' => $meeting,
+                    'role'    => 1,
+                )
+            );
+
+        if (!$relation) {
             return $this->redirect($this->generateUrl('show_meeting', array('url' => $meeting->getUrl())));
         }
 

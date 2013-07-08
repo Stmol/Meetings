@@ -2,7 +2,9 @@
 
 {% block body %}
     {% if app.user %}
-        Name: {{ app.user.name }}
+        Email: {{ app.user.email }}<br>
+        Name: {{ app.user.name }}<br>
+        Surname: {{ app.user.surname }}
     {% else %}
         Not auth!
     {% endif %}

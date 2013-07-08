@@ -2,11 +2,11 @@
 
 namespace Stmol\HuddleBundle\Entity;
 
+use Symfony\Component\Security\Core\User\EquatableInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\ManyToMany;
-use Doctrine\ORM\Mapping\JoinTable;
-use Doctrine\ORM\Mapping\JoinColumn;
+use Symfony\Component\Security\Core\User\Role;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Member
@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping\JoinColumn;
  * @ORM\Table(name="members")
  * @ORM\Entity(repositoryClass="Stmol\HuddleBundle\Entity\Repository\MemberRepository")
  */
-class Member
+class Member implements UserInterface, EquatableInterface
 {
     /**
      * @var integer
@@ -54,26 +54,28 @@ class Member
     private $createDate;
 
     /**
-     * Owning Side
+     * @var string
      *
-     * @ManyToMany(targetEntity="Meeting", inversedBy="members")
-     * @JoinTable(name="member_meetings",
-     *      joinColumns={@JoinColumn(name="member_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@JoinColumn(name="meeting_id", referencedColumnName="id")}
-     *      )
+     * @ORM\Column(name="secret", type="string", length=40, nullable=true)
      */
-    private $meetings;
+    private $secret;
+
+    /**
+     * @ORM\OneToMany(targetEntity="MemberMeetingRole", mappedBy="member")
+     */
+    private $meetingRelations;
 
     public function __construct()
     {
         $this->createDate = new \DateTime();
-        $this->meetings = new ArrayCollection();
+        $this->secret = sha1(uniqid(mt_rand(), true));
+        $this->meetingRelations = new ArrayCollection();
     }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -89,14 +91,14 @@ class Member
     public function setEmail($email)
     {
         $this->email = $email;
-    
+
         return $this;
     }
 
     /**
      * Get email
      *
-     * @return string 
+     * @return string
      */
     public function getEmail()
     {
@@ -112,14 +114,14 @@ class Member
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -135,14 +137,14 @@ class Member
     public function setSurname($surname)
     {
         $this->surname = $surname;
-    
+
         return $this;
     }
 
     /**
      * Get surname
      *
-     * @return string 
+     * @return string
      */
     public function getSurname()
     {
@@ -158,14 +160,14 @@ class Member
     public function setCreateDate($createDate)
     {
         $this->createDate = $createDate;
-    
+
         return $this;
     }
 
     /**
      * Get createDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreateDate()
     {
@@ -173,35 +175,166 @@ class Member
     }
 
     /**
-     * Add meetings
+     * Add meetingRelation
      *
-     * @param \Stmol\HuddleBundle\Entity\Meeting $meetings
+     * @param MemberMeetingRole $meetingRelation
      * @return Member
      */
-    public function addMeeting(\Stmol\HuddleBundle\Entity\Meeting $meetings)
+    public function addMeetingRelation(MemberMeetingRole $meetingRelation)
     {
-        $this->meetings[] = $meetings;
+        $this->meetingRelations[] = $meetingRelation;
     
         return $this;
     }
 
     /**
-     * Remove meetings
+     * Remove meetingRelation
      *
-     * @param \Stmol\HuddleBundle\Entity\Meeting $meetings
+     * @param MemberMeetingRole $meetingRelation
      */
-    public function removeMeeting(\Stmol\HuddleBundle\Entity\Meeting $meetings)
+    public function removeMeetingRelation(MemberMeetingRole $meetingRelation)
     {
-        $this->meetings->removeElement($meetings);
+        $this->meetingRelations->removeElement($meetingRelation);
     }
 
     /**
-     * Get meetings
+     * Get meetingRelations
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getMeetings()
+    public function getMeetingRelations()
     {
-        return $this->meetings;
+        return $this->meetingRelations;
+    }
+
+    /**
+     * Set secret
+     *
+     * @param string $secret
+     * @return Member
+     */
+    public function setSecret($secret)
+    {
+        $this->secret = $secret;
+    
+        return $this;
+    }
+
+    /**
+     * Get secret
+     *
+     * @return string 
+     */
+    public function getSecret()
+    {
+        return $this->secret;
+    }
+
+    /**
+     * The equality comparison should neither be done by referential equality
+     * nor by comparing identities (i.e. getId() === getId()).
+     *
+     * However, you do not need to compare every attribute, but only those that
+     * are relevant for assessing whether re-authentication is required.
+     *
+     * Also implementation should consider that $user instance may implement
+     * the extended user interface `AdvancedUserInterface`.
+     *
+     * @param UserInterface $user
+     *
+     * @return Boolean
+     */
+    public function isEqualTo(UserInterface $user)
+    {
+        if (!$user instanceof Member) {
+            return false;
+        }
+
+        if ($this->secret !== $user->getUsername()) {
+            return false;
+        }
+
+        if ($this->email !== $user->getEmail()) {
+            return false;
+        }
+
+        if ($this->name !== $user->getName()) {
+            return false;
+        }
+
+        if ($this->surname !== $user->getSurname()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns the roles granted to the user.
+     *
+     * <code>
+     * public function getRoles()
+     * {
+     *     return array('ROLE_USER');
+     * }
+     * </code>
+     *
+     * Alternatively, the roles might be stored on a ``roles`` property,
+     * and populated in any number of different ways when the user object
+     * is created.
+     *
+     * @return Role[] The user roles
+     */
+    public function getRoles()
+    {
+        return array();
+    }
+
+    /**
+     * Returns the password used to authenticate the user.
+     *
+     * This should be the encoded password. On authentication, a plain-text
+     * password will be salted, encoded, and then compared to this value.
+     *
+     * @return string The password
+     */
+    public function getPassword()
+    {
+        return null;
+    }
+
+    /**
+     * Returns the salt that was originally used to encode the password.
+     *
+     * This can return null if the password was not encoded using a salt.
+     *
+     * @return string The salt
+     */
+    public function getSalt()
+    {
+        return null;
+    }
+
+    /**
+     * Returns the username used to authenticate the user.
+     *
+     * @return string The username
+     */
+    public function getUsername()
+    {
+        return $this->secret;
+    }
+
+    /**
+     * Removes sensitive data from the user.
+     *
+     * This is important if, at any given point, sensitive information like
+     * the plain-text password is stored on this object.
+     *
+     * @return void
+     */
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
     }
 }

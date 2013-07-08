@@ -5,17 +5,14 @@ namespace Stmol\HuddleBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Doctrine\ORM\Mapping\ManyToOne;
-use Doctrine\ORM\Mapping\ManyToMany;
-use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
  * Meeting
  *
- * @ORM\Table(name="meetings",uniqueConstraints={@UniqueConstraint(name="url_idx", columns={"url"})})
+ * @ORM\Table(name="meetings")
  * @ORM\Entity(repositoryClass="Stmol\HuddleBundle\Entity\Repository\MeetingRepository")
  */
-class Meeting
+class Meeting implements \Serializable
 {
     /**
      * @var integer
@@ -43,7 +40,7 @@ class Meeting
     /**
      * @var string
      *
-     * @ORM\Column(name="url", type="string", length=255)
+     * @ORM\Column(name="url", type="string", length=255, unique=true)
      */
     private $url;
 
@@ -69,28 +66,21 @@ class Meeting
     private $secret;
 
     /**
-     * @ManyToOne(targetEntity="Member", cascade={"all"}, fetch="EAGER")
+     * @ORM\OneToMany(targetEntity="MemberMeetingRole", mappedBy="meeting")
      */
-    private $author;
-
-    /**
-     * Inverse Side
-     *
-     * @ManyToMany(targetEntity="Member", mappedBy="meetings")
-     */
-    private $members;
+    private $memberRelations;
 
     public function __construct()
     {
         $this->createDate = new \DateTime();
-        $this->members = new ArrayCollection();
         $this->secret = sha1(uniqid(mt_rand(), true));
+        $this->memberRelations = new ArrayCollection();
     }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -106,14 +96,14 @@ class Meeting
     public function setTitle($title)
     {
         $this->title = $title;
-    
+
         return $this;
     }
 
     /**
      * Get title
      *
-     * @return string 
+     * @return string
      */
     public function getTitle()
     {
@@ -129,14 +119,14 @@ class Meeting
     public function setDescription($description)
     {
         $this->description = $description;
-    
+
         return $this;
     }
 
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -152,14 +142,14 @@ class Meeting
     public function setUrl($url)
     {
         $this->url = $url;
-    
+
         return $this;
     }
 
     /**
      * Get url
      *
-     * @return string 
+     * @return string
      */
     public function getUrl()
     {
@@ -175,14 +165,14 @@ class Meeting
     public function setStartDate($startDate)
     {
         $this->startDate = $startDate;
-    
+
         return $this;
     }
 
     /**
      * Get startDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getStartDate()
     {
@@ -198,74 +188,18 @@ class Meeting
     public function setCreateDate($createDate)
     {
         $this->createDate = $createDate;
-    
+
         return $this;
     }
 
     /**
      * Get createDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreateDate()
     {
         return $this->createDate;
-    }
-
-    /**
-     * Set author
-     *
-     * @param string $author
-     * @return Meeting
-     */
-    public function setAuthor($author)
-    {
-        $this->author = $author;
-    
-        return $this;
-    }
-
-    /**
-     * Get author
-     *
-     * @return string 
-     */
-    public function getAuthor()
-    {
-        return $this->author;
-    }
-
-    /**
-     * Add members
-     *
-     * @param \Stmol\HuddleBundle\Entity\Member $members
-     * @return Meeting
-     */
-    public function addMember(\Stmol\HuddleBundle\Entity\Member $members)
-    {
-        $this->members[] = $members;
-    
-        return $this;
-    }
-
-    /**
-     * Remove members
-     *
-     * @param \Stmol\HuddleBundle\Entity\Member $members
-     */
-    public function removeMember(\Stmol\HuddleBundle\Entity\Member $members)
-    {
-        $this->members->removeElement($members);
-    }
-
-    /**
-     * Get members
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getMembers()
-    {
-        return $this->members;
     }
 
     /**
@@ -277,17 +211,80 @@ class Meeting
     public function setSecret($secret)
     {
         $this->secret = $secret;
-    
+
         return $this;
     }
 
     /**
      * Get secret
      *
-     * @return string 
+     * @return string
      */
     public function getSecret()
     {
         return $this->secret;
+    }
+
+    /**
+     * Add memberRelation
+     *
+     * @param MemberMeetingRole $memberRelation
+     * @return Meeting
+     */
+    public function addMemberRelation(MemberMeetingRole $memberRelation)
+    {
+        $this->memberRelations[] = $memberRelation;
+
+        return $this;
+    }
+
+    /**
+     * Remove memberRelation
+     *
+     * @param MemberMeetingRole $memberRelation
+     * @internal param \Stmol\HuddleBundle\Entity\MemberMeetingRole $memberRelations
+     */
+    public function removeMemberRelation(MemberMeetingRole $memberRelation)
+    {
+        $this->memberRelations->removeElement($memberRelation);
+    }
+
+    /**
+     * Get memberRelations
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getMemberRelations()
+    {
+        return $this->memberRelations;
+    }
+
+    /**
+     * (PHP 5 &gt;= 5.1.0)<br/>
+     * String representation of object
+     * @link http://php.net/manual/en/serializable.serialize.php
+     * @return string the string representation of the object or null
+     */
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+        ));
+    }
+
+    /**
+     * (PHP 5 &gt;= 5.1.0)<br/>
+     * Constructs the object
+     * @link http://php.net/manual/en/serializable.unserialize.php
+     * @param string $serialized <p>
+     * The string representation of the object.
+     * </p>
+     * @return void
+     */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+        ) = unserialize($serialized);
     }
 }

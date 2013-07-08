@@ -1,0 +1,16 @@
+{% extends "::base.html.twig" %}
+
+{% block body %}
+    {{ form_start(form) }}
+        {{ form_errors(form) }}
+
+        {{ form_row(form.meeting.title) }}
+        {{ form_row(form.meeting.description) }}
+        {{ form_row(form.meeting.startDate) }}
+
+        {{ form_row(form.member.email) }}
+        {{ form_row(form.member.name) }}
+        {{ form_row(form.member.surname) }}
+
+    {{ form_end(form) }}
+{% endblock %}
