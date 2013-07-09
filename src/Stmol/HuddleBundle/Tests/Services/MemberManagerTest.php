@@ -20,18 +20,11 @@ class MemberManagerTest extends WebTestCase
     }
 
     /**
-     * @dataProvider providerMembers
-     * @param $email
-     * @param $name
-     * @param $surname
+     * @dataProvider providerCreateMember
+     * @param \Stmol\HuddleBundle\Entity\Member $member
      */
-    public function testCreateMember($email, $name, $surname)
+    public function testCreateMember(Member $member)
     {
-        $member = new Member();
-        $member->setEmail($email);
-        $member->setName($name);
-        $member->setSurname($surname);
-
         $memberManager = new MemberManager($this->_doctrine->getManager());
         $memberManager->createMember($member);
 
@@ -40,21 +33,28 @@ class MemberManagerTest extends WebTestCase
             ->getRepository('StmolHuddleBundle:Member')
             ->findOneBy(
                 array(
-                    'email'   => $email,
-                    'name'    => $name,
-                    'surname' => $surname,
+                    'email'   => $member->getEmail(),
+                    'name'    => $member->getName(),
+                    'surname' => $member->getSurname(),
                 )
             );
 
         $this->assertInstanceOf('Stmol\HuddleBundle\Entity\Member', $testMember);
     }
 
-    public function providerMembers()
+    public function providerCreateMember()
     {
+        $m1 = new Member();
+
+        $m1
+            ->setEmail('fake@test.com')
+            ->setName('FakeName')
+            ->setSurname('FakeSurName')
+        ;
+
         return array(
-            array('test@test.com', 'Name1', 'Surname'),
-            array('test2@test.com', 'Name 2', 12345),
-            array('some@some.is', 3, 'My long surname'),
+            # 1
+            array($m1),
         );
     }
 }

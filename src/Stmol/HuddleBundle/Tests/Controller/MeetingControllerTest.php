@@ -46,9 +46,9 @@ class MeetingControllerTest extends WebTestCase
             array(
                 'new_meeting[meeting][title]'       => $meeting['title'],
                 'new_meeting[meeting][description]' => $meeting['description'],
-                'new_meeting[author][email]'        => $author['email'],
-                'new_meeting[author][name]'         => $author['name'],
-                'new_meeting[author][surname]'      => $author['surname'],
+                'new_meeting[member][email]'        => $author['email'],
+                'new_meeting[member][name]'         => $author['name'],
+                'new_meeting[member][surname]'      => $author['surname'],
             )
         );
 
@@ -71,14 +71,22 @@ class MeetingControllerTest extends WebTestCase
                 array(
                     'title'       => $meeting['title'],
                     'description' => $meeting['description'],
-                    'author'      => $authorTest,
+                )
+            );
+
+        $relation = $this->_doctrine
+            ->getRepository('StmolHuddleBundle:MemberMeetingRole')
+            ->findOneBy(
+                array(
+                    'meeting' => $meetingTest,
+                    'member'  => $authorTest,
+                    'role'    => 1,
                 )
             );
 
         $this->assertInstanceOf('Stmol\HuddleBundle\Entity\Member', $authorTest);
         $this->assertInstanceOf('Stmol\HuddleBundle\Entity\Meeting', $meetingTest);
-
-        // TODO (Stmol) make test for cookies!
+        $this->assertInstanceOf('Stmol\HuddleBundle\Entity\MemberMeetingRole', $relation);
 
         $this->assertTrue($client->getResponse()->isRedirect());
     }
@@ -143,7 +151,7 @@ class MeetingControllerTest extends WebTestCase
             ->find(1);
 
         $client = static::createClient();
-        $crawler = $client->request('GET', '/m/'.$meeting->getUrl().'/edit');
+        $crawler = $client->request('GET', '/m/' . $meeting->getUrl() . '/edit');
 
         // Assert code 200
         // $this->assertTrue($client->getResponse()->isOk());
