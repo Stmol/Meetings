@@ -3,11 +3,13 @@
 {% block body %}
     <h2>Meeting page</h2>
 
-    {% for rel in app.user.meetingRelations %}
-        {% if rel.meeting == meeting and rel.role == 1 %}
-            <a href="{{ path('edit_meeting',  { 'url':meeting.url }) }}">Изменить</a>
-        {% endif %}
-    {% endfor %}
+    {% if app.user %}
+        {% for rel in app.user.meetingRelations %}
+            {% if rel.meeting == meeting and rel.role == 1 %}
+                <a href="{{ path('edit_meeting',  { 'url':meeting.url }) }}">Изменить</a>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
 
     <h3>{{ meeting.title }}</h3>
     <p>{{ meeting.description }}</p>
