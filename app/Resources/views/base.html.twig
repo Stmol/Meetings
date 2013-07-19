@@ -1,13 +1,61 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>{% block title %}{{ "Meetings"|trans }}{% endblock %}</title>
+    <meta name="description" content="{{ description|default('Create your meeting'|trans) }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+    {% block stylesheets %}
+        <link href="http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic|PT+Sans+Caption:700&amp;subset=latin,cyrillic" media="screen" rel="stylesheet" type="text/css" />
+
+        {% stylesheets filter='cssrewrite' output='css/vendor.css'
+            '@StmolHuddleBundle/Resources/public/css/bootstrap/bootstrap.min.css'
+            '@StmolHuddleBundle/Resources/public/css/bootstrap/bootstrap-responsive.min.css'
+            '@StmolHuddleBundle/Resources/public/css/flatui/flat-ui.css' %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
+
+        {% stylesheets filter='cssrewrite' output='css/app.css'
+            '@StmolHuddleBundle/Resources/public/css/huddle/main.css' %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
+    {% endblock stylesheets %}
+
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+</head>
+<body>
+<!--[if lt IE 7]>
+<p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+<![endif]-->
+
+{% block body %}
+
+<div class="container">
+    {% block header %}
+        <div class="row huddle-row huddle-header">
+            <div class="span8 offset2">
+                <h2>Awesome Meetings</h2> <sup><a href="{{ path('default') }}">Alfa</a></sup>
+            </div>
+        </div>
+    {% endblock header %}
+
+    {% block container '' %}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {% javascripts output='js/vendor.js'
+        '@StmolHuddleBundle/Resources/public/js/vendor/jquery/jquery-1.10.1.min.js'
+        '@StmolHuddleBundle/Resources/public/js/bootstrap/bootstrap.min.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock javascripts %}
+</body>
 </html>

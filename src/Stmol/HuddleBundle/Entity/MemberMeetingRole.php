@@ -4,11 +4,12 @@ namespace Stmol\HuddleBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Stmol\HuddleBundle\Entity\Member;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
  * MemberMeetingRole
  *
- * @ORM\Table(name="member_meeting_relations")
+ * @ORM\Table(name="member_meeting_relations", uniqueConstraints={@UniqueConstraint(name="member_meeting_idx", columns={"member_id", "meeting_id"})})
  * @ORM\Entity
  */
 class MemberMeetingRole
@@ -38,13 +39,13 @@ class MemberMeetingRole
 
     /**
      * @ORM\ManyToOne(targetEntity="Member", inversedBy="meetingRelations")
-     * @ORM\JoinColumn(name="member_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="member_id", referencedColumnName="id", nullable=false)
      */
     private $member;
 
     /**
      * @ORM\ManyToOne(targetEntity="Meeting", inversedBy="memberRelations")
-     * @ORM\JoinColumn(name="meeting_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="meeting_id", referencedColumnName="id", nullable=false)
      */
     private $meeting;
 

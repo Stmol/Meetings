@@ -1,36 +1,134 @@
 {% extends "::base.html.twig" %}
 
-{% block body %}
-    <h2>Meeting page</h2>
+{% block container %}
+
+    {# TODO: Refactoring! #}
+    {% set goMeeting = false %}
 
     {% if app.user %}
-        {% for rel in app.user.meetingRelations %}
-            {% if rel.meeting == meeting and rel.role == 1 %}
-                <a href="{{ path('edit_meeting',  { 'url':meeting.url }) }}">Изменить</a>
-            {% endif %}
+        {% for relation in app.user.meetingRelations if relation.meeting == meeting %}
+            {% set goMeeting = true %}
         {% endfor %}
     {% endif %}
 
-    <h3>{{ meeting.title }}</h3>
-    <p>{{ meeting.description }}</p>
-    <p>{{ meeting.startDate|date }}</p>
+    <div class="row">
+        <div class="span9 offset2">
+            <h1>{{ meeting.title }}</h1>
+            <hr>
+        </div>
+    </div>
 
-    {% for relation in meeting.memberRelations %}
-        <ul>
-            <li>{{ relation.member.email }}</li>
-            <li>{{ relation.member.name }}</li>
-            <li>{{ relation.member.surname }}</li>
-            {% if relation.role == 1 %}<li>Организатор</li>{% endif %}
-        </ul>
-    {% endfor %}
+    <div class="row">
 
-    {{ form_start(form) }}
-        {{ form_errors(form) }}
+        <div class="span5 offset2">
+            <span class="fui-calendar-solid huddle-icon-caption"></span><h3>{{ 'Information'|trans }}</h3>
 
-        {{ form_row(form.email) }}
-        {{ form_row(form.name) }}
-        {{ form_row(form.surname) }}
+            <p><span class="muted">{{ 'Date'|trans }}:</span> {{ meeting.startDate|date("d M Y") }}</p>
 
-        <input type="submit" value="Submit"/>
-    {{ form_end(form) }}
-{% endblock %}
+            <p>{{ meeting.description|raw }}</p>
+
+            {% if app.user %}
+                {% for rel in app.user.meetingRelations %}
+                    {% if rel.meeting == meeting and rel.role == 1 %}
+                        <a href="{{ path('edit_meeting',  { 'url':meeting.url }) }}">{{ 'Edit'|trans }}</a>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="span4">
+            <span class="fui-user huddle-icon-caption"></span><h3>{{ 'Members'|trans }}</h3>
+
+            {% for relation in meeting.memberRelations if relation.state == 1 %}
+                <p>
+                    {% if app.user and app.user == relation.member %}
+                        <strong>{{ relation.member.name }} {{ relation.member.surname }}</strong>
+                    {% else %}
+                        {{ relation.member.name }} {{ relation.member.surname }}
+                    {% endif %}
+
+                    {% if relation.role == 1 %} ({{ 'Author'|trans }}){% endif %}
+                    {% if app.user and app.user == relation.member %}
+                        (<a href="{{ path('change_state_at_meeting', { 'url': meeting.url, 'action': 'deny' }) }}">{{ 'leave'|trans }}</a>)
+                    {% endif %}
+                </p>
+            {% endfor %}
+
+            <p>&nbsp</p>
+
+            <span class="fui-cross huddle-icon-caption muted"></span><h3 class="muted">{{ 'Denied'|trans }}</h3>
+            {% for relation in meeting.memberRelations if relation.state == 0 %}
+                <p class="muted">
+                    {% if app.user and app.user == relation.member %}
+                        <strong>{{ relation.member.name }} {{ relation.member.surname }}</strong>
+                    {% else %}
+                        {{ relation.member.name }} {{ relation.member.surname }}
+                    {% endif %}
+
+                    {% if relation.role == 1 %} ({{ 'Author'|trans }}){% endif %}
+                    {% if app.user and app.user == relation.member %}
+                        (<a href="{{ path('change_state_at_meeting', { 'url': meeting.url, 'action': 'go' }) }}">{{ 'I go'|trans }}</a>)
+                    {% endif %}
+                </p>
+            {% endfor %}
+
+            {% if not app.user %}
+                <div class="row huddle-row">
+                    <button id="member-go" class="span2 btn btn-block btn-info">{{ 'Go to a meeting'|trans }}</button>
+                </div>
+            {% else %}
+                {% if not goMeeting %}
+                    <div class="row huddle-row">
+                        <button id="member-go" class="span2 btn btn-block btn-info">{{ 'Go to a meeting'|trans }}</button>
+                    </div>
+                {% endif %}
+            {% endif %}
+
+            <div id="member-form" class="huddle-member-form hide">
+                {{ form_start(form) }}
+                {{ form_errors(form) }}
+
+                {# Email #}
+                {{ form_label(form.email) }}
+                {{ form_widget(form.email, {
+                    'attr': {
+                        'class': 'input-block-level'
+                    }
+                }) }}
+
+                {# Name #}
+                {{ form_label(form.name) }}
+                {{ form_widget(form.name, {
+                    'attr': {
+                        'class': 'input-block-level'
+                    }
+                }) }}
+
+                {# Surname #}
+                {{ form_label(form.surname) }}
+                {{ form_widget(form.surname, {
+                    'attr': {
+                        'class': 'input-block-level'
+                    }
+                }) }}
+
+                {% if not app.user %}
+                <p class="text-center">
+                    <a href="#">{{ 'Already have an account'|trans }}?</a>
+                </p>
+                {% endif %}
+
+                <input type="submit" value="{{ 'I go'|trans }}!" class="btn btn-large btn-block btn-success"/>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock container %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts output='js/app.js'
+        '@StmolHuddleBundle/Resources/public/js/huddle/meeting_page.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock javascripts %}

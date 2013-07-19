@@ -1,11 +1,23 @@
 {% extends "::base.html.twig" %}
 
-{% block body %}
-    {% if app.user %}
-        Email: {{ app.user.email }}<br>
-        Name: {{ app.user.name }}<br>
-        Surname: {{ app.user.surname }}
-    {% else %}
-        Not auth!
-    {% endif %}
+{% block container %}
+    <div class="row huddle-row hidden-phone">
+        <div class="span8 offset2">
+            <img class="img-rounded" src="http://placehold.it/860x300/95A5A6/FFFFFF.png&amp;text=Meetings Alfa">
+        </div>
+    </div>
+
+    <div class="row huddle-row">&nbsp</div>
+
+    <div class="row huddle-row">
+        <div class="span4 offset4">
+            <a href="{{ path('new_meeting') }}" class="btn btn-large btn-block btn-primary">{{ 'Create new meeting'|trans }}</a>
+        </div>
+    </div>
+
+    <div class="row huddle-row">
+        <div class="span4 offset4 text-center">
+            <a href="#">{{ 'Forgot the link to the meeting'|trans }}?</a>
+        </div>
+    </div>
 {% endblock %}

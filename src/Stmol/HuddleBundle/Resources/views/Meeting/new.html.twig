@@ -1,16 +1,128 @@
 {% extends "::base.html.twig" %}
 
-{% block body %}
-    {{ form_start(form) }}
-        {{ form_errors(form) }}
+{% block container %}
 
-        {{ form_row(form.meeting.title) }}
-        {{ form_row(form.meeting.description) }}
-        {{ form_row(form.meeting.startDate) }}
+    <div class="row huddle-row">
 
-        {{ form_row(form.member.email) }}
-        {{ form_row(form.member.name) }}
-        {{ form_row(form.member.surname) }}
+        <div class="span1 offset1 hidden-phone">
+            <div class="huddle-icon-block">
+                <div class="huddle-icon">
+                    {% image '@StmolHuddleBundle/Resources/public/images/icons/calendar@2x.png' %}
+                    <img src="{{ asset_url }}" alt="{{ 'Meeting'|trans }}"/>
+                    {% endimage %}
+                </div>
 
-    {{ form_end(form) }}
+                <h4>{{ 'Meeting'|trans }}</h4>
+            </div>
+        </div>
+
+        <div class="span4 login-form huddle-row">
+            {{ form_start(form) }}
+            {{ form_errors(form) }}
+
+            {# Title #}
+            {{ form_label(form.meeting.title) }}
+            {{ form_widget(form.meeting.title, {
+                'attr': {
+                    'class': 'span4'
+                }
+            }) }}
+
+            {# Description #}
+            {{ form_label(form.meeting.description) }}
+            {{ form_widget(form.meeting.description, {
+                'attr': {
+                    'class': 'span4'
+                }
+            }) }}
+
+            <div class="huddle-date-input">
+                {# Day #}
+                {{ form_label(form.meeting.startDate.day) }}
+                {{ form_widget(form.meeting.startDate.day, {
+                    'attr': {
+                        'class': 'span1'
+                    }
+                }) }}
+            </div>
+
+            <div class="huddle-date-input">
+                {# Month #}
+                {{ form_label(form.meeting.startDate.month) }}
+                {{ form_widget(form.meeting.startDate.month, {
+                    'attr': {
+                        'class': 'span2'
+                    }
+                }) }}
+            </div>
+
+            <div class="huddle-date-input">
+                {# Year #}
+                {{ form_label(form.meeting.startDate.year) }}
+                {{ form_widget(form.meeting.startDate.year, {
+                    'attr': {
+                        'class': 'span1'
+                    }
+                }) }}
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row huddle-row">
+
+        <div class="span1 offset1 hidden-phone">
+            <div class="huddle-icon-block">
+                <div class="huddle-icon">
+                    {% image '@StmolHuddleBundle/Resources/public/images/icons/book@2x.png' %}
+                    <img src="{{ asset_url }}" alt="{{ 'Author'|trans }}"/>
+                    {% endimage %}
+                </div>
+
+                <h4>{{ 'Author'|trans }} <br>
+                    <small>{{ 'of meeting'|trans }}</small>
+                </h4>
+            </div>
+        </div>
+
+        <div class="span4 login-form" style="margin-bottom: 20px;">
+            {# Email #}
+            {{ form_label(form.member.email) }}
+            {{ form_widget(form.member.email, {
+                'attr': {
+                    'class': 'span4'
+                }
+            }) }}
+
+            {# Name #}
+            {{ form_label(form.member.name) }}
+            {{ form_widget(form.member.name, {
+                'attr': {
+                    'class': 'span4'
+                }
+            }) }}
+
+            {# Surname #}
+            {{ form_label(form.member.surname) }}
+            {{ form_widget(form.member.surname, {
+                'attr': {
+                    'class': 'span4'
+                }
+            }) }}
+
+            {% if not app.user %}
+            <p class="text-center">
+                <a href="#">{{ 'Already have an account'|trans }}?</a>
+            </p>
+            {% endif %}
+        </div>
+
+        <div class="row" style="margin-top: 15px;">
+            <div class="span4 offset2" style="padding-left: 55px">
+                <input type="submit" value="{{ 'Submit'|trans }}" class="btn btn-large btn-block btn-success"/>
+            </div>
+        </div>
+        {{ form_end(form) }}
+
+    </div>
 {% endblock %}

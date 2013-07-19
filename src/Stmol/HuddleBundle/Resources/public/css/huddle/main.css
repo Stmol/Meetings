@@ -1,0 +1,98 @@
+body {
+    font-size: 1.0em;
+    font-family: "PT Sans", Arial, sans-serif;
+    background-color: #FFFFFF;
+}
+
+a {
+    color: #2980B9;
+}
+
+a:hover {
+    color: #3498DB;
+}
+
+p {
+    margin: 8px 0;
+}
+
+.btn-success:active,
+.btn-primary:active{
+    box-shadow:0 0 0 #ffffff;
+}
+
+.btn-primary {
+    box-shadow: 0 3px 0 #16A085;
+}
+
+.btn-success {
+    box-shadow: 0 3px 0 #27AE60;
+}
+
+.btn-info {
+    box-shadow: 0 3px 0 #2980B9;
+}
+
+.btn-large {
+    font-size: 1.3em !important;
+}
+
+.btn-block {
+    margin-top: 10px;
+}
+
+.login-form {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+}
+
+.input-block-level {
+    min-height: 41px;
+}
+
+/*
+ * Huddle App
+ */
+.huddle-header {
+    padding: 15px 0;
+}
+
+.huddle-row {
+    margin-bottom: 10px;
+}
+
+.huddle-row div h2 {
+    display: inline;
+}
+
+.huddle-row div sup {
+    color: #3498DB;
+}
+
+.huddle-icon {
+    width: 96px;
+}
+
+.huddle-icon-block {
+    margin-left: -30px;
+}
+
+.huddle-date-input {
+    display: inline;
+    float: left;
+    margin-right: 20px;
+}
+
+.huddle-member-form {
+    background-color: #edeff1;
+    padding: 24px 23px 20px;
+    position: relative;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+}
+
+.huddle-icon-caption {
+    float: left;
+    padding: 11px 7px 0 0;
+}

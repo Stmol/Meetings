@@ -25,7 +25,6 @@ class NewMeetingType extends AbstractType
         $builder
             ->add('meeting', 'meeting')
             ->add('member', 'member')
-            ->add('Submit', 'submit')
         ;
     }
 

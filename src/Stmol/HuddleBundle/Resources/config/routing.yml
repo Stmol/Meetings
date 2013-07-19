@@ -17,3 +17,18 @@ edit_meeting:
     path: /m/{url}/edit
     defaults:
         _controller: StmolHuddleBundle:Meeting:edit
+
+change_state_at_meeting:
+    path: /m/{url}/member/{action}
+    defaults:
+        _controller: StmolHuddleBundle:Member:changeState
+    requirements:
+        action: go|deny
+
+manage_member:
+    path: /m/{url}/member/{id}/{action}
+    defaults:
+        _controller: StmolHuddleBundle:Member:manage
+    requirements:
+        id: \d+
+        action: remove|restore

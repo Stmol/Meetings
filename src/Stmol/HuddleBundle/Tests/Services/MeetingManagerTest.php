@@ -80,7 +80,6 @@ class MeetingManagerTest extends WebTestCase
         $this->assertInstanceOf('Stmol\HuddleBundle\Entity\MemberMeetingRole', $relation);
     }
 
-
     /**
      * Test addMember method.
      *
@@ -119,14 +118,16 @@ class MeetingManagerTest extends WebTestCase
     public function providerAddAuthor()
     {
         $firstMeeting = new Meeting();
-        $firstMeeting->setTitle('Test title');
-        $firstMeeting->setDescription('Test description');
-        $firstMeeting->setStartDate(new \DateTime());
+        $firstMeeting
+            ->setTitle('Test title')
+            ->setDescription('Test description')
+            ->setStartDate(new \DateTime());
 
         $firstMember = new Member();
-        $firstMember->setEmail('test@test.com');
-        $firstMember->setName('Test name');
-        $firstMember->setSurname('Test surname');
+        $firstMember
+            ->setEmail('test@test.com')
+            ->setName('Test name')
+            ->setSurname('Test surname');
 
         return array(
             # 1
