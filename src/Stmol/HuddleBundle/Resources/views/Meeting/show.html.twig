@@ -12,20 +12,20 @@
     {% endif %}
 
     <div class="row">
-        <div class="span9 offset2">
-            <h1>{{ meeting.title }}</h1>
+        <div class="span8 offset2">
+            <h1 class="huddle-meeting-title">{{ meeting.title }}</h1>
             <hr>
         </div>
     </div>
 
     <div class="row">
 
-        <div class="span5 offset2">
+        <div class="span4 offset2">
             <span class="fui-calendar-solid huddle-icon-caption"></span><h3>{{ 'Information'|trans }}</h3>
 
             <p><span class="muted">{{ 'Date'|trans }}:</span> {{ meeting.startDate|date("d M Y") }}</p>
 
-            <p>{{ meeting.description|raw }}</p>
+            <p>{{ meeting.description|nl2br }}</p>
 
             {% if app.user %}
                 {% for rel in app.user.meetingRelations %}
@@ -39,6 +39,7 @@
         <div class="span4">
             <span class="fui-user huddle-icon-caption"></span><h3>{{ 'Members'|trans }}</h3>
 
+            <div class="huddle-form">
             {% for relation in meeting.memberRelations if relation.state == 1 %}
                 <p>
                     {% if app.user and app.user == relation.member %}
@@ -47,30 +48,49 @@
                         {{ relation.member.name }} {{ relation.member.surname }}
                     {% endif %}
 
-                    {% if relation.role == 1 %} ({{ 'Author'|trans }}){% endif %}
+                    {% if relation.role == 1 %} <span class="muted">{{ 'Author'|trans }}</span>{% endif %}
                     {% if app.user and app.user == relation.member %}
                         (<a href="{{ path('change_state_at_meeting', { 'url': meeting.url, 'action': 'deny' }) }}">{{ 'leave'|trans }}</a>)
                     {% endif %}
                 </p>
             {% endfor %}
 
-            <p>&nbsp</p>
-
-            <span class="fui-cross huddle-icon-caption muted"></span><h3 class="muted">{{ 'Denied'|trans }}</h3>
             {% for relation in meeting.memberRelations if relation.state == 0 %}
                 <p class="muted">
+                    <span class="huddle-text-through">
                     {% if app.user and app.user == relation.member %}
-                        <strong>{{ relation.member.name }} {{ relation.member.surname }}</strong>
+                        <strong>{{ relation.member.name }} {{ relation.member.surname }}</strong></span>
                     {% else %}
-                        {{ relation.member.name }} {{ relation.member.surname }}
+                        {{ relation.member.name }} {{ relation.member.surname }}</span>
                     {% endif %}
 
-                    {% if relation.role == 1 %} ({{ 'Author'|trans }}){% endif %}
+                    {% if relation.role == 1 %}<span class="muted"> {{ 'Author'|trans }}</span>{% endif %}
                     {% if app.user and app.user == relation.member %}
                         (<a href="{{ path('change_state_at_meeting', { 'url': meeting.url, 'action': 'go' }) }}">{{ 'I go'|trans }}</a>)
                     {% endif %}
                 </p>
             {% endfor %}
+            </div>
+
+            <p>&nbsp</p>
+
+            {#{% if isCanceled %}#}
+            {#<span class="fui-cross huddle-icon-caption muted"></span><h3 class="muted">{{ 'Denied'|trans }}</h3>#}
+            {#{% for relation in meeting.memberRelations if relation.state == 0 %}#}
+                {#<p class="muted">#}
+                    {#{% if app.user and app.user == relation.member %}#}
+                        {#<strong>{{ relation.member.name }} {{ relation.member.surname }}</strong>#}
+                    {#{% else %}#}
+                        {#{{ relation.member.name }} {{ relation.member.surname }}#}
+                    {#{% endif %}#}
+
+                    {#{% if relation.role == 1 %} <span class="muted">{{ 'Author'|trans }}</span>{% endif %}#}
+                    {#{% if app.user and app.user == relation.member %}#}
+                        {#(<a href="{{ path('change_state_at_meeting', { 'url': meeting.url, 'action': 'go' }) }}">{{ 'I go'|trans }}</a>)#}
+                    {#{% endif %}#}
+                {#</p>#}
+            {#{% endfor %}#}
+            {#{% endif %}#}
 
             {% if not app.user %}
                 <div class="row huddle-row">
@@ -84,7 +104,7 @@
                 {% endif %}
             {% endif %}
 
-            <div id="member-form" class="huddle-member-form hide">
+            <div id="member-form" class="huddle-form hide">
                 {{ form_start(form) }}
                 {{ form_errors(form) }}
 

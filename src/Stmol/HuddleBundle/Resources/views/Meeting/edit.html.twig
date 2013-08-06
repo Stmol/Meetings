@@ -3,22 +3,20 @@
 {% block container %}
 
     <div class="row">
-        <div class="span6 offset2">
-            <h1><a href="{{ path('show_meeting', { 'url':meeting.url }) }}">{{ meeting.title }}</a></h1>
+        <div class="span6 offset4">
+            <h2 class="huddle-meeting-title"><a href="{{ path('show_meeting', { 'url':meeting.url }) }}">{{ meeting.title }}</a></h2>
         </div>
     </div>
 
     <div class="row huddle-row">
 
-        <div class="span1 offset1 hidden-phone">
+        <div class="span1 offset3 hidden-phone">
             <div class="huddle-icon-block">
                 <div class="huddle-icon">
-                    {% image '@StmolHuddleBundle/Resources/public/images/icons/calendar@2x.png' %}
+                    {% image '@StmolHuddleBundle/Resources/public/images/icons/Calendar@2x.png' %}
                     <img src="{{ asset_url }}" alt="{{ 'Meeting'|trans }}"/>
                     {% endimage %}
                 </div>
-
-                <h4>{{ 'Meeting'|trans }}</h4>
             </div>
         </div>
 
@@ -28,19 +26,11 @@
 
                 {# Title #}
                 {{ form_label(form.title) }}
-                {{ form_widget(form.title, {
-                    'attr': {
-                        'class': 'input-block-level'
-                    }
-                }) }}
+                {{ form_widget(form.title, { 'attr': { 'class': 'input-block-level' } }) }}
 
                 {# Description #}
                 {{ form_label(form.description) }}
-                {{ form_widget(form.description, {
-                    'attr': {
-                        'class': 'input-block-level'
-                    }
-                }) }}
+                {{ form_widget(form.description, { 'attr': { 'class': 'input-block-level', 'rows': 5 } }) }}
 
                 {# Day #}
                 <div class="huddle-date-input">
@@ -80,10 +70,25 @@
     </div>
 
     <div class="row">
-        <div class="span5 offset2">
-
-            <span class="fui-user huddle-icon-caption"></span>
+        <div class="span6 offset4">
             <h3>{{ 'Members'|trans }}</h3>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="span1 offset3 hidden-phone">
+            <div class="huddle-icon-block">
+                <div class="huddle-icon">
+                    {% image '@StmolHuddleBundle/Resources/public/images/icons/Clipboard@2x.png' %}
+                    <img src="{{ asset_url }}" alt="{{ 'Meeting'|trans }}"/>
+                    {% endimage %}
+                </div>
+            </div>
+        </div>
+
+        <div class="span4 login-form">
+            <p class="muted">{{ app.user.name }} {{ app.user.surname }} (это Вы)</p>
 
             {% for relation in meeting.memberRelations if relation.member != app.user and relation.state != 2 %}
                 <p>{{ relation.member.name }} {{ relation.member.surname }}
@@ -100,9 +105,7 @@
                     (<a href="{{ path('manage_member', { 'url': meeting.url, 'id': relation.member.id, 'action': 'restore' }) }}">{{ 'restore'|trans }}</a>)
                 </p>
             {% endfor %}
-
         </div>
     </div>
-
 
 {% endblock %}

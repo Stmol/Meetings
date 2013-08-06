@@ -59,7 +59,8 @@ class MeetingController extends Controller
             // Set the cookie with secret token
             // TODO (Stmol) Make a service for this action
             if (!$this->getRequest()->cookies->has($this->container->getParameter('stmol_huddle.cookie.user_secret'))
-            OR !$this->getUser()) {
+                OR !$this->getUser()
+            ) {
                 $response = new Response();
                 // TODO (Stmol) Other arguments for Cookie!
                 $response->headers->setCookie(
@@ -179,12 +180,7 @@ class MeetingController extends Controller
             $meetingManager = $this->get('stmol_huddle.meeting_manager');
             $meetingManager->updateMeeting($meeting);
 
-            return $this->redirect($this->generateUrl('edit_meeting', array('url' => $meeting->getUrl())));
-
-            // TODO (Stmol) do it through MeetingManager or as a way!
-//            $manager = $this->getDoctrine()->getManager();
-//            $manager->persist($meeting);
-//            $manager->flush();
+            return $this->redirect($this->generateUrl('show_meeting', array('url' => $meeting->getUrl())));
         }
 
         return $this->render(

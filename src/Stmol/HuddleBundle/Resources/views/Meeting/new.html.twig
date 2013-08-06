@@ -2,76 +2,69 @@
 
 {% block container %}
 
+    <div class="row">
+        <div class="span2 offset4">
+            <h2>{{ 'Meeting'|trans }}</h2>
+        </div>
+    </div>
+
     <div class="row huddle-row">
 
-        <div class="span1 offset1 hidden-phone">
+        <div class="span1 offset3 hidden-phone">
             <div class="huddle-icon-block">
                 <div class="huddle-icon">
                     {% image '@StmolHuddleBundle/Resources/public/images/icons/calendar@2x.png' %}
                     <img src="{{ asset_url }}" alt="{{ 'Meeting'|trans }}"/>
                     {% endimage %}
                 </div>
-
-                <h4>{{ 'Meeting'|trans }}</h4>
             </div>
         </div>
 
-        <div class="span4 login-form huddle-row">
-            {{ form_start(form) }}
-            {{ form_errors(form) }}
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
 
+            {#<h3>{{ 'Meeting'|trans }}</h3>#}
+        {#</div>#}
+
+        <div class="span4 login-form">
             {# Title #}
             {{ form_label(form.meeting.title) }}
-            {{ form_widget(form.meeting.title, {
-                'attr': {
-                    'class': 'span4'
-                }
-            }) }}
+            {{ form_widget(form.meeting.title, { 'attr': { 'class': 'input-block-level' } }) }}
 
             {# Description #}
             {{ form_label(form.meeting.description) }}
-            {{ form_widget(form.meeting.description, {
-                'attr': {
-                    'class': 'span4'
-                }
-            }) }}
+            {{ form_widget(form.meeting.description, { 'attr': { 'class': 'input-block-level', 'rows': 5 } }) }}
 
             <div class="huddle-date-input">
                 {# Day #}
                 {{ form_label(form.meeting.startDate.day) }}
-                {{ form_widget(form.meeting.startDate.day, {
-                    'attr': {
-                        'class': 'span1'
-                    }
-                }) }}
+                {{ form_widget(form.meeting.startDate.day, { 'attr': { 'class': 'span1' } }) }}
             </div>
 
             <div class="huddle-date-input">
                 {# Month #}
                 {{ form_label(form.meeting.startDate.month) }}
-                {{ form_widget(form.meeting.startDate.month, {
-                    'attr': {
-                        'class': 'span2'
-                    }
-                }) }}
+                {{ form_widget(form.meeting.startDate.month, { 'attr': { 'class': 'span2' } }) }}
             </div>
 
             <div class="huddle-date-input">
                 {# Year #}
                 {{ form_label(form.meeting.startDate.year) }}
-                {{ form_widget(form.meeting.startDate.year, {
-                    'attr': {
-                        'class': 'span1'
-                    }
-                }) }}
+                {{ form_widget(form.meeting.startDate.year, { 'attr': { 'class': 'span1' } }) }}
             </div>
 
         </div>
     </div>
 
+    <div class="row">
+        <div class="span2 offset4">
+            <h2>{{ 'Author'|trans }}</h2>
+        </div>
+    </div>
+
     <div class="row huddle-row">
 
-        <div class="span1 offset1 hidden-phone">
+        <div class="span1 offset3 hidden-phone">
             <div class="huddle-icon-block">
                 <div class="huddle-icon">
                     {% image '@StmolHuddleBundle/Resources/public/images/icons/book@2x.png' %}
@@ -79,36 +72,22 @@
                     {% endimage %}
                 </div>
 
-                <h4>{{ 'Author'|trans }} <br>
-                    <small>{{ 'of meeting'|trans }}</small>
-                </h4>
+                {#<h4>{{ 'Author'|trans }}</h4>#}
             </div>
         </div>
 
-        <div class="span4 login-form" style="margin-bottom: 20px;">
+        <div class="span4 login-form">
             {# Email #}
             {{ form_label(form.member.email) }}
-            {{ form_widget(form.member.email, {
-                'attr': {
-                    'class': 'span4'
-                }
-            }) }}
+            {{ form_widget(form.member.email, { 'attr': { 'class': 'input-block-level' } }) }}
 
             {# Name #}
             {{ form_label(form.member.name) }}
-            {{ form_widget(form.member.name, {
-                'attr': {
-                    'class': 'span4'
-                }
-            }) }}
+            {{ form_widget(form.member.name, { 'attr': { 'class': 'input-block-level' } }) }}
 
             {# Surname #}
             {{ form_label(form.member.surname) }}
-            {{ form_widget(form.member.surname, {
-                'attr': {
-                    'class': 'span4'
-                }
-            }) }}
+            {{ form_widget(form.member.surname, { 'attr': { 'class': 'input-block-level' } }) }}
 
             {% if not app.user %}
             <p class="text-center">
@@ -117,9 +96,9 @@
             {% endif %}
         </div>
 
-        <div class="row" style="margin-top: 15px;">
-            <div class="span4 offset2" style="padding-left: 55px">
-                <input type="submit" value="{{ 'Submit'|trans }}" class="btn btn-large btn-block btn-success"/>
+        <div class="row">
+            <div class="span3 offset5">
+                <input type="submit" value="{{ 'Submit'|trans }}" class="btn btn-large btn-block btn-primary"/>
             </div>
         </div>
         {{ form_end(form) }}
