@@ -83,16 +83,25 @@ p {
     margin-right: 20px;
 }
 
-.huddle-member-form {
+.huddle-form {
     background-color: #edeff1;
     padding: 24px 23px 20px;
     position: relative;
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
     border-radius: 6px;
+    margin-bottom: 10px;
 }
 
 .huddle-icon-caption {
     float: left;
     padding: 11px 7px 0 0;
+}
+
+.huddle-meeting-title:first-letter {
+    text-transform: capitalize;
+}
+
+.huddle-text-through {
+    text-decoration: line-through;
 }
