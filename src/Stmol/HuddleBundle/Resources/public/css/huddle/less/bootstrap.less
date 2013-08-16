@@ -1,0 +1,41 @@
+// Mixins
+
+.box-shadow (@x: 0, @y: 0, @radius: 0, @color: #ffffff) {
+	box-shadow: @arguments;
+	-moz-box-shadow: @arguments;
+	-webkit-box-shadow: @arguments;
+}
+
+.btn-success:active,
+.btn-primary:active {
+	.box-shadow;
+}
+
+.btn-primary {
+	.box-shadow(@y: 3px, @color: #16A085);
+}
+
+.btn-success {
+	.box-shadow(@y: 13px, @color: #27AE60);
+}
+
+.btn-info {
+	.box-shadow(@y: 3px, @color: #2980B9);
+}
+
+.btn-large {
+	font-size: @base-font-size + 0.3 !important;
+}
+
+.btn-block {
+	margin-top: 10px;
+}
+
+.login-form {
+	margin-bottom: 10px;
+	padding-bottom: 10px;
+}
+
+.input-block-level {
+	min-height: 41px;
+}

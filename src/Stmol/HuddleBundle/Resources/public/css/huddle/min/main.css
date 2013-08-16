@@ -1,0 +1,90 @@
+body {
+  font-size: 1em;
+  font-family: "PT Sans", Arial, sans-serif;
+  background-color: #FFFFFF;
+}
+a {
+  color: #2980b9;
+}
+a:hover {
+  color: #3498db;
+}
+p {
+  margin: 8px 0;
+}
+.btn-success:active,
+.btn-primary:active {
+  box-shadow: 0 0 0 #ffffff;
+  -moz-box-shadow: 0 0 0 #ffffff;
+  -webkit-box-shadow: 0 0 0 #ffffff;
+}
+.btn-primary {
+  box-shadow: 0 3px 0 #16a085;
+  -moz-box-shadow: 0 3px 0 #16a085;
+  -webkit-box-shadow: 0 3px 0 #16a085;
+}
+.btn-success {
+  box-shadow: 0 13px 0 #27ae60;
+  -moz-box-shadow: 0 13px 0 #27ae60;
+  -webkit-box-shadow: 0 13px 0 #27ae60;
+}
+.btn-info {
+  box-shadow: 0 3px 0 #2980b9;
+  -moz-box-shadow: 0 3px 0 #2980b9;
+  -webkit-box-shadow: 0 3px 0 #2980b9;
+}
+.btn-large {
+  font-size: 1.3em !important;
+}
+.btn-block {
+  margin-top: 10px;
+}
+.login-form {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+}
+.input-block-level {
+  min-height: 41px;
+}
+.huddle-header {
+  padding: 15px 0;
+}
+.huddle-row {
+  margin-bottom: 10px;
+}
+.huddle-row div h2 {
+  display: inline;
+}
+.huddle-row div sup {
+  color: #3498db;
+}
+.huddle-icon {
+  width: 96px;
+}
+.huddle-icon-block {
+  margin-left: -30px;
+}
+.huddle-date-input {
+  display: inline;
+  float: left;
+  margin-right: 20px;
+}
+.huddle-form {
+  background-color: #edeff1;
+  padding: 24px 23px 20px;
+  position: relative;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+.huddle-icon-caption {
+  float: left;
+  padding: 11px 7px 0 0;
+}
+.huddle-meeting-title:first-letter {
+  text-transform: capitalize;
+}
+.huddle-text-through {
+  text-decoration: line-through;
+}
